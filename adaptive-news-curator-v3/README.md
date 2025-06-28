@@ -1,20 +1,37 @@
-# adaptive-news-curator
+# Adaptive News Curator V3 🧬
 
-## V3 - Vector DB based user profile
-1. Starts with empty vector db of feedback and base search query
-1. Search query is made to Tavily with base search query
-1. User is asked for feedback, which is then saved into vector db.
-1. Upon next loop, vector db is queried for 2-3 most frequently liked topics
-1. These topics are then used to query the vector db to rerank and fetch the top 5 most relevant articles liked/disliked by the user
-1. These articles are then fed into the ChatGpt prompt to serve as user context. All seen urls are also fed into seen urls to prevent duplication of results.
+**Cutting-edge news curation with vector intelligence!**
 
-## Setup
+V3 leverages a vector database and advanced AI to deeply understand your interests, rerank articles, and deliver the most relevant news—always fresh, never repeated.
 
-None
+---
 
-## Main Loop
+## 🧠 How It Works
 
-Run 
-```
+1. Starts with an empty vector database and a base search query.
+2. Fetches news from Tavily using the base query.
+3. Collects your feedback and stores it in the vector database.
+4. On each loop, identifies your top 2-3 most liked topics from the vector db.
+5. Reranks and fetches the top 5 most relevant articles (liked/disliked) using vector similarity.
+6. Feeds these articles and all seen URLs into ChatGPT to provide rich user context and prevent duplicates.
+7. Continuously adapts to your evolving interests for maximum relevance!
+
+---
+
+## ⚡ Quick Setup
+
+No setup required—just run and go!
+
+---
+
+## ▶️ Run the Main Loop
+
+Start your next-gen news curation:
+
+```bash
 python main_curator.py
 ```
+
+---
+
+**Experience the future of news curation—try V3 and see how smart your feed can get!**

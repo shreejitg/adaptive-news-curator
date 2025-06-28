@@ -1,23 +1,40 @@
-# adaptive-news-curator
+# Adaptive News Curator V2 🌟
 
-## V2 - Storage and profile synthesis based news curator
-1. Starts with base AI recommendation search query
-1. Requests for feedback (y/n) and saves to sqlite db
-1. Times out to prevent spamming Tavily search
-1. Retrieves liked and disliked articles and forms an updated user profile using ChatGpt. Then uses the new user profile to formulate search query.
-1. Requests feedback to close loop
+**Smarter news, powered by your evolving profile!**
 
-## Setup
+V2 takes personalization to the next level by synthesizing your feedback into a dynamic user profile using ChatGPT, ensuring every news recommendation is tailored just for you.
 
-1. Run
+---
+
+## 🧠 How It Works
+
+1. Starts with an AI-driven search query.
+2. Presents news articles and collects your feedback (like/dislike).
+3. Stores your feedback in a local SQLite database.
+4. Prevents spamming Tavily search with built-in timeouts.
+5. Uses your feedback to update your user profile with ChatGPT, then crafts smarter search queries based on your interests.
+6. Continuously adapts and improves with every interaction!
+
+---
+
+## ⚡ Quick Setup
+
+1. Run the database setup at least once:
+
+    ```bash
+    python database_setup.py
+    ```
+
+---
+
+## ▶️ Run the Main Loop
+
+Start your personalized news curation:
+
 ```bash
-python database_setup.py
-```
-  at least once.
-
-## Main Loop
-
-Run 
-```
 python main_curator.py
 ```
+
+---
+
+**Experience news that evolves with you—start V2 and see the difference!**

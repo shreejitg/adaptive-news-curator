@@ -1,23 +1,40 @@
-# adaptive-news-curator
+# Adaptive News Curator V1 🚀
 
-## V1 - Simple storage based news feed recommender
-1. Starts with base AI recommendation search query
-1. Requests for feedback (y/n) and saves to sqlite db
-1. Times out to prevent spamming Tavily search
-1. Retrieves recommendations and forms new search query based on feedback, while ensuring no repeat articles are served.
-1. Requests feedback to close loop
+**Kickstart your personalized news journey!**
 
-## Setup
+V1 is a simple yet powerful AI-driven news recommender that learns from your feedback to deliver ever-better articles—no repeats, no spam, just smarter news.
 
-1. Run
+---
+
+## 🧠 How It Works
+
+1. Starts with a smart AI-powered search query.
+2. Presents you with news articles and asks for your feedback (like/dislike).
+3. Stores your feedback in a local SQLite database.
+4. Prevents spamming Tavily search with built-in timeouts.
+5. Refines future recommendations based on your feedback, ensuring you never see the same article twice.
+6. Continuously improves with every interaction!
+
+---
+
+## ⚡ Quick Setup
+
+1. Run the database setup at least once:
+
+    ```bash
+    python database_setup.py
+    ```
+
+---
+
+## ▶️ Run the Main Loop
+
+Start curating your news:
+
 ```bash
-python database_setup.py
-```
-  at least once.
-
-## Main Loop
-
-Run 
-```
 python main_curator.py
 ```
+
+---
+
+**Ready to get smarter news? Start now and let the AI learn what you love!**
