@@ -113,3 +113,10 @@ cython_debug/
 # VS Code settings
 .vscode/
 .settings/
+
+# Secrets
+.env
+
+# DB
+.db
+chroma_db/
