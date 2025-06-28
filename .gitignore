@@ -118,5 +118,5 @@ cython_debug/
 .env
 
 # DB
-.db
+*.db
 chroma_db/
