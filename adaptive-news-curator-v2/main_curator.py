@@ -5,7 +5,9 @@ from langchain_openai import ChatOpenAI
 from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_community.tools.tavily_search.tool import TavilySearchResults
-from custom_tools import read_past_feedback, get_previously_recommended_urls, save_feedback_to_db
+from custom_tools import save_feedback_to_db
+from profile_manager import update_and_get_user_profile
+import sqlite3
 
 # 1. Setup
 load_dotenv()
@@ -13,25 +15,30 @@ timeout = 5 # seconds
 
 # 2. Initialize LLM and Tools
 llm = ChatOpenAI(model="gpt-4o", temperature=0.7)
+# NEW, SIMPLER TOOLS FOR THE CURATOR
 search_tool = TavilySearchResults(max_results=5)
-custom_tools = [read_past_feedback, get_previously_recommended_urls]
-tools = [search_tool] + custom_tools
+# The old custom tools are no longer needed for this agent.
+tools = [search_tool] 
 
 # 3. Create the Agent Prompt
+# UPDATED AGENT PROMPT
+# It now takes a 'user_profile' as input instead of figuring it out itself.
 prompt = ChatPromptTemplate.from_messages([
     ("system", """
-You are a world-class Personalized News Curator. Your goal is to find a single, highly relevant news article for the user that they have NOT seen before.
+You are a world-class Personalized News Curator. Your goal is to find a single, highly relevant news article for the user based on their profile.
+
+This is the user's profile, which describes their interests:
+<user_profile>
+{user_profile}
+</user_profile>
 
 Your Process:
-1.  First, understand the user's interests by using the `read_past_feedback` tool. This is your primary source of truth for their preferences.
-2.  Based on their preferences, formulate a search query for the `tavily_search_results_json` tool.
-3.  Analyze the search results. Check which URLs have already been recommended using the `get_previously_recommended_urls` tool.
-4.  From the new, unrecommended articles, select the ONE that best matches the user's inferred interests.
-5.  Provide a structured response with the article's title, a concise 2-3 sentence summary, and the URL. Do not make up information.
-
-Your final output must be only the title, summary, and URL.
+1.  Analyze the user profile to understand their tastes.
+2.  Formulate a highly specific search query for the `tavily_search_results_json` tool to find a new article that matches their profile.
+3.  From the search results, select the ONE best article. You must not recommend an article they have already seen.
+4.  Provide a structured response with the article's title, a concise 2-3 sentence summary, and the URL.
 """),
-    ("human", "{input}"),
+    ("human", "Find a new, interesting article for me. Here are the URLs I've already seen: {seen_urls}"),
     ("placeholder", "{agent_scratchpad}"),
 ])
 
@@ -43,11 +50,22 @@ agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
 def run_curator():
     print("--- Adaptive News Curator ---")
     while True:
-        # The input here is simple, the agent's real context comes from its tools
-        user_input = "Find a new, interesting article for me."
+        # 1. Synthesize the profile from ALL historical data
+        user_profile = update_and_get_user_profile()
         
-        response = agent_executor.invoke({"input": user_input})
-        
+        # 2. Get URLs to avoid duplication
+        # (This part still needs a direct DB call, but it's very lightweight)
+        conn = sqlite3.connect('news_curator.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT url FROM news_feedback")
+        seen_urls = [row[0] for row in cursor.fetchall()]
+        conn.close()
+
+        # 3. Invoke the curator agent with the synthesized profile
+        response = agent_executor.invoke({
+            "user_profile": user_profile,
+            "seen_urls": seen_urls
+        })
         # The agent's raw output might have extra text; we need to parse it.
         # For simplicity, we assume the LLM follows instructions and the last part is the article.
         # A more robust solution would use response parsing or structured output.
